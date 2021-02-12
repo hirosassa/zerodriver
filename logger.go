@@ -43,7 +43,6 @@ func New(isDebug bool) *Logger {
 	return &Logger{&logger}
 }
 
-
 // To use method chain we need followings
 
 func (l *Logger) Trace() *Event {

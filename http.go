@@ -8,8 +8,7 @@ import (
 )
 
 func (e *Event) HTTP(req *zapdriver.HTTPPayload) *zerolog.Event {
-	ze := zerolog.Event(*e.Event)
-	return ze.Interface("httpRequest", req)
+	return e.Event.Interface("httpRequest", req)
 }
 
 func NewHTTP(req *http.Request, res *http.Response) *zapdriver.HTTPPayload {
