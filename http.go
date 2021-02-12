@@ -7,11 +7,8 @@ import (
 	"github.com/rs/zerolog"
 )
 
-type Event zerolog.Event
-
 func (e *Event) HTTP(req *zapdriver.HTTPPayload) *zerolog.Event {
-	ze := (*zerolog.Event)(e)
-	return ze.Interface("httpRequest", req)
+	return e.Event.Interface("httpRequest", req)
 }
 
 func NewHTTP(req *http.Request, res *http.Response) *zapdriver.HTTPPayload {
