@@ -22,7 +22,7 @@ First of all, initialize a logger.
 
 ```go
 logger := zerodriver.New(false) // production mode (global log level set to `info`)
-logger := zerodriver.New(true) // development mode (global log level is `debug`)
+logger := zerodriver.New(true) // development mode (global log level set to `debug`)
 ```
 
 Then, write logs by using zerolog based fluent API!
