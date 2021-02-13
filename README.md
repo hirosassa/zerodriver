@@ -14,7 +14,7 @@ This package provides simple structured logger optimized for [Cloud Logging](htt
 Key features of tbls are:
 
 - zerolog based simple method chaining API
-- optimized for [Cloud Logging LogEntry format](https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry) format
+- optimized for [Cloud Logging LogEntry](https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry) format
 
 ## Usage
 
@@ -62,9 +62,7 @@ func (e *Event) HTTP(req *zapdriver.HTTPPayload) *zerolog.Event
 ```
 
 This function feature is borrowed from zapdriver. You can generate `zapdriver.HTTPPayload` from `http.Request` and `http.Response` using `NewHTTP` function.
-
 Detail description of usage of these function is available [here](https://github.com/blendle/zapdriver#http).
-
 Using these feature, you can log HTTP related information as follows,
 
 ```go
