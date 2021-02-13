@@ -50,6 +50,9 @@ func main() {
 
 ### GCP specific fields
 
+If your log is followed [LogEntry](https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry) format,
+you can query logs or create metrics alert easier and efficiently on GCP Cloud Logging console.
+
 #### HTTP request
 
 To log HTTP related metrics and information, you can use following function
