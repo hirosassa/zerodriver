@@ -2,12 +2,15 @@ package zerodriver
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
-	"github.com/blendle/zapdriver"
 	"github.com/rs/zerolog"
 )
 
+// HTTPPayload is the struct consists of http request related components.
+// Details are in following link.
+// https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#HttpRequest
 type HTTPPayload struct {
 	RequestMethod                  string  `json:"requestMethod"`
 	RequestURL                     string  `json:"requestUrl"`
@@ -26,19 +29,46 @@ type HTTPPayload struct {
 	Protocol                       string  `json:"protocol"`
 }
 
+// The request processing latency on the server, from the time the request was
+// received until the response was sent.
 type Latency struct {
 	Nanos   int32 `json:"nanos"`
 	Seconds int64 `json:"seconds"`
 }
 
-func (e *Event) HTTP(req *zapdriver.HTTPPayload) *zerolog.Event {
+func (e *Event) HTTP(req *HTTPPayload) *zerolog.Event {
 	return e.Event.Interface("httpRequest", req)
 }
 
-func NewHTTP(req *http.Request, res *http.Response) *zapdriver.HTTPPayload {
-	return zapdriver.NewHTTP(req, res)
+// NewHTTP returns a HTTPPayload struct.
+func NewHTTP(req *http.Request, res *http.Response) *HTTPPayload {
+	if req == nil {
+		req = &http.Request{}
+	}
+
+	if res == nil {
+		res = &http.Response{}
+	}
+
+	payload := &HTTPPayload{
+		RequestMethod: req.Method,
+		RequestSize:   strconv.FormatInt(req.ContentLength, 10),
+		Status:        res.StatusCode,
+		ResponseSize:  strconv.FormatInt(res.ContentLength, 10),
+		UserAgent:     req.UserAgent(),
+		RemoteIP:      req.RemoteAddr,
+		Referer:       req.Referer(),
+		Protocol:      req.Proto,
+	}
+
+	if req.URL != nil {
+		payload.RequestURL = req.URL.String()
+	}
+
+	return payload
 }
 
+// MakeLatency returns Latency struct based on passed time.Duration object.
 func MakeLatency(d time.Duration) Latency {
 	nanos := d.Nanoseconds()
 	secs := nanos / 1e9
