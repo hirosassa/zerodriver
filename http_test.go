@@ -35,7 +35,7 @@ func TestMakeLatency(t *testing.T) {
 			zerodriver.Latency{Nanos: 0, Seconds: 10},
 		},
 		"sec and nano": {
-			time.Duration(123 + 456 * 1e9),
+			time.Duration(123 + 456*1e9),
 			zerodriver.Latency{Nanos: 123, Seconds: 456},
 		},
 	}
