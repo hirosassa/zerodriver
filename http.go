@@ -13,28 +13,28 @@ import (
 // Details are in following link.
 // https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#HttpRequest
 type HTTPPayload struct {
-	RequestMethod                  string  `json:"requestMethod,omitempty"`
-	RequestURL                     string  `json:"requestUrl,omitempty"`
-	RequestSize                    string  `json:"requestSize,omitempty"`
-	Status                         int     `json:"status,omitempty"`
-	ResponseSize                   string  `json:"responseSize,omitempty"`
-	UserAgent                      string  `json:"userAgent,omitempty"`
-	RemoteIP                       string  `json:"remoteIp,omitempty"`
-	ServerIP                       string  `json:"serverIp,omitempty"`
-	Referer                        string  `json:"referer,omitempty"`
-	Latency                        Latency `json:"latency,omitempty"`
-	CacheLookup                    bool    `json:"cacheLookup,omitempty"`
-	CacheHit                       bool    `json:"cacheHit,omitempty"`
-	CacheValidatedWithOriginServer bool    `json:"cacheValidatedWithOriginServer,omitempty"`
-	CacheFillBytes                 string  `json:"cacheFillBytes,omitempty"`
-	Protocol                       string  `json:"protocol,omitempty"`
+	RequestMethod                  string
+	RequestURL                     string
+	RequestSize                    string
+	Status                         int
+	ResponseSize                   string
+	UserAgent                      string
+	RemoteIP                       string
+	ServerIP                       string
+	Referer                        string
+	Latency                        Latency
+	CacheLookup                    bool
+	CacheHit                       bool
+	CacheValidatedWithOriginServer bool
+	CacheFillBytes                 string
+	Protocol                       string
 }
 
 // The request processing latency on the server, from the time the request was
 // received until the response was sent.
 type Latency struct {
-	Nanos   int32 `json:"nanos"`
-	Seconds int64 `json:"seconds"`
+	Nanos   int32
+	Seconds int64
 }
 
 // HTTP adds thehttpRequest field to the *zerolog.Event context
