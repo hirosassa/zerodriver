@@ -62,12 +62,12 @@ func TestNewHTTP(t *testing.T) {
 	}
 }
 
-func TestMakeLatency(t * testing.T) {
+func TestMakeLatency(t *testing.T) {
 	t.Parallel()
 	var tests = map[string]struct {
-		d    time.Duration
+		d     time.Duration
 		isGKE bool
-		want Latency
+		want  Latency
 	}{
 		"gke": {
 			time.Duration(0),
