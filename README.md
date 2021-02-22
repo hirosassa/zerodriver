@@ -41,7 +41,7 @@ import (
 )
 
 func main() {
-    logger := zerodriver.New(false)
+    logger := zerodriver.NewProductionLogger()
     logger.Info().Str("key", "value").Msg("hello world")
 }
 
