@@ -36,7 +36,6 @@ type Latency interface{}
 
 // GAELatency is the Latency for GAE and Cloud Run.
 type GAELatency struct {
-	latency Latency
 	Seconds int64
 	Nanos   int32
 }
