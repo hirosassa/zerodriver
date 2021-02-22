@@ -13,21 +13,21 @@ import (
 // Details are in following link.
 // https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#HttpRequest
 type HTTPPayload struct {
-	RequestMethod                  string
-	RequestURL                     string
-	RequestSize                    string
-	Status                         int
-	ResponseSize                   string
-	UserAgent                      string
-	RemoteIP                       string
-	ServerIP                       string
-	Referer                        string
-	Latency                        Latency
-	CacheLookup                    bool
-	CacheHit                       bool
-	CacheValidatedWithOriginServer bool
-	CacheFillBytes                 string
-	Protocol                       string
+	RequestMethod                  string  `json:"requestMethod"`
+	RequestURL                     string  `json:"requestUrl"`
+	RequestSize                    string  `json:"requestSize"`
+	Status                         int     `json:"status"`
+	ResponseSize                   string  `json:"responseSize"`
+	UserAgent                      string  `json:"userAgent"`
+	RemoteIP                       string  `json:"remoteIp"`
+	ServerIP                       string  `json:"serverIp"`
+	Referer                        string  `json:"referer"`
+	Latency                        Latency `json:"latency"`
+	CacheLookup                    bool    `json:"cacheLookup"`
+	CacheHit                       bool    `json:"cacheHit"`
+	CacheValidatedWithOriginServer bool    `json:"cacheValidatedWithOriginServer"`
+	CacheFillBytes                 string  `json:"cacheFillByte"`
+	Protocol                       string  `json:"protocol"`
 }
 
 // Latency is the interface of the request processing latency on the server.
