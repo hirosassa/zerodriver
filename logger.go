@@ -35,7 +35,7 @@ func NewProductionLogger() *Logger {
 	zerolog.LevelFieldMarshalFunc = func(l zerolog.Level) string {
 		return logLevelSeverity[l]
 	}
-	zerolog.TimestampFieldName = "timestamp"
+	zerolog.TimestampFieldName = "time"
 	zerolog.TimeFieldFormat = time.RFC3339Nano
 
 	// default sampler
@@ -55,7 +55,7 @@ func NewDevelopmentLogger() *Logger {
 	zerolog.LevelFieldMarshalFunc = func(l zerolog.Level) string {
 		return logLevelSeverity[l]
 	}
-	zerolog.TimestampFieldName = "timestamp"
+	zerolog.TimestampFieldName = "time"
 	zerolog.TimeFieldFormat = time.RFC3339Nano
 
 	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
