@@ -61,11 +61,21 @@ To log HTTP related metrics and information, you can use following function
 func (e *Event) HTTP(req *zapdriver.HTTPPayload) *zerolog.Event
 ```
 
-This function feature is borrowed from zapdriver. You can generate `zapdriver.HTTPPayload` from `http.Request` and `http.Response` using `NewHTTP` function.
+This function feature is borrowed from zapdriver. You can generate `zerodriver.HTTPPayload` from `http.Request` and `http.Response` using `NewHTTP` function.
 Detail description of usage of these function is available [here](https://github.com/blendle/zapdriver#http).
+Same as zapdriver.NewHTTP, following fields needs to be set manually:
+
+- `ServerIP`
+- `Latency`
+- `CacheLookup`
+- `CacheHit`
+- `CacheValidatedWithOriginServer`
+- `CacheFillBytes`
+ 
 Using these feature, you can log HTTP related information as follows,
 
 ```go
 p := NewHTTP(req, res)
+p.Latency = time.Since(start) // add some fields manually
 logger.Info().HTTP(p).Msg("request received")
 ```
