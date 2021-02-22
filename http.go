@@ -36,8 +36,8 @@ type Latency interface{}
 
 // GAELatency is the Latency for GAE and Cloud Run.
 type GAELatency struct {
-	Seconds int64
-	Nanos   int32
+	Seconds int64 `json:"seconds"`
+	Nanos   int32 `json:"nanos"`
 }
 
 // HTTP adds thehttpRequest field to the *zerolog.Event context
