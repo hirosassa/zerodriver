@@ -72,7 +72,7 @@ func TestMakeLatency(t * testing.T) {
 		"gke": {
 			time.Duration(0),
 			true,
-			GKELatency{Latency: "0s"},
+			"0s",
 		},
 		"gae": {
 			time.Duration(0),

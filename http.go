@@ -41,12 +41,6 @@ type GAELatency struct {
 	Nanos   int32
 }
 
-// GKELatency is the Latency for GKE
-type GKELatency struct {
-	latency Latency
-	Latency string
-}
-
 // HTTP adds thehttpRequest field to the *zerolog.Event context
 func (e *Event) HTTP(req *HTTPPayload) *zerolog.Event {
 	return e.Event.Interface("httpRequest", req)
@@ -97,7 +91,7 @@ func MakeLatency(d time.Duration, isGKE bool) Latency {
 
 // makeGKELatency returns Latency struct for GKE based on passed time.Duration object.
 func makeGKELatency(d time.Duration) Latency {
-	return GKELatency{Latency: d.String()}
+	return d.String()
 }
 
 // makeGAELatency returns Latency struct for Cloud Run and GAE based on passed time.Duration object.
