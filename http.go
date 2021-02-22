@@ -26,7 +26,7 @@ type HTTPPayload struct {
 	CacheLookup                    bool    `json:"cacheLookup"`
 	CacheHit                       bool    `json:"cacheHit"`
 	CacheValidatedWithOriginServer bool    `json:"cacheValidatedWithOriginServer"`
-	CacheFillBytes                 string  `json:"cacheFillByte"`
+	CacheFillBytes                 string  `json:"cacheFillBytes"`
 	Protocol                       string  `json:"protocol"`
 }
 
@@ -90,7 +90,7 @@ func MakeLatency(d time.Duration, isGKE bool) Latency {
 
 // makeGKELatency returns Latency struct for GKE based on passed time.Duration object.
 func makeGKELatency(d time.Duration) Latency {
-	return d.String()
+	return d.Truncate(time.Millisecond).String()
 }
 
 // makeGAELatency returns Latency struct for Cloud Run and GAE based on passed time.Duration object.
