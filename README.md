@@ -21,14 +21,14 @@ Key features of tbls are:
 First of all, initialize a logger.
 
 ```go
-logger := zerodriver.New(false) // production mode (global log level set to `info`)
-logger := zerodriver.New(true) // development mode (global log level set to `debug`)
+logger := zerodriver.NewProductionLogger() // production mode (global log level set to `info`)
+logger := zerodriver.NewDevelopmentLogger() // development mode (global log level set to `debug`)
 ```
 
 Then, write logs by using zerolog based fluent API!
 ```go
 logger.Info().Str("key", "value").Msg("Hello World!")
-// output: {"severity":"INFO","key":"value","timestamp":"2009-11-10T23:00:00Z","message":"hello world"}
+// output: {"severity":"INFO","key":"value","time":"2009-11-10T23:00:00Z","message":"hello world"}
 ```
 
 Here's complete example:
@@ -45,7 +45,7 @@ func main() {
     logger.Info().Str("key", "value").Msg("hello world")
 }
 
-// output: {"severity":"INFO","key":"value","timestamp":"2009-11-10T23:00:00Z","message":"hello world"}
+// output: {"severity":"INFO","key":"value","time":"2009-11-10T23:00:00Z","message":"hello world"}
 ```
 
 ### GCP specific fields
