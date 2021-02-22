@@ -9,7 +9,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// HTTPPayload is the struct consists of http request related components.
+// HTTPPayloadGKE is the struct consists of http request related components.
 // Details are in following link.
 // https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#HttpRequest
 type HTTPPayload struct {
@@ -30,11 +30,21 @@ type HTTPPayload struct {
 	Protocol                       string
 }
 
-// The request processing latency on the server, from the time the request was
-// received until the response was sent.
-type Latency struct {
-	Nanos   int32
+// Latency is the interface of the request processing latency on the server.
+// The format of the Latency should differ for GKE and for GAE, Cloud Run.
+type Latency interface{}
+
+// GAELatency is the Latency for GAE and Cloud Run.
+type GAELatency struct {
+	latency Latency
 	Seconds int64
+	Nanos   int32
+}
+
+// GKELatency is the Latency for GKE
+type GKELatency struct {
+	latency Latency
+	Latency string
 }
 
 // HTTP adds thehttpRequest field to the *zerolog.Event context
@@ -76,12 +86,26 @@ func NewHTTP(req *http.Request, res *http.Response) *HTTPPayload {
 	return payload
 }
 
-// MakeLatency returns Latency struct based on passed time.Duration object.
-func MakeLatency(d time.Duration) Latency {
+// MakeLatency returns Latency based on passed time.Duration object.
+func MakeLatency(d time.Duration, isGKE bool) Latency {
+	if isGKE {
+		return makeGKELatency(d)
+	} else {
+		return makeGAELatency(d)
+	}
+}
+
+// makeGKELatency returns Latency struct for GKE based on passed time.Duration object.
+func makeGKELatency(d time.Duration) Latency {
+	return GKELatency{Latency: d.String()}
+}
+
+// makeGAELatency returns Latency struct for Cloud Run and GAE based on passed time.Duration object.
+func makeGAELatency(d time.Duration) Latency {
 	nanos := d.Nanoseconds()
 	secs := nanos / 1e9
 	nanos -= secs * 1e9
-	return Latency{
+	return GAELatency{
 		Nanos:   int32(nanos),
 		Seconds: secs,
 	}

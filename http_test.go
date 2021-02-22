@@ -62,30 +62,57 @@ func TestNewHTTP(t *testing.T) {
 	}
 }
 
-func TestMakeLatency(t *testing.T) {
+func TestMakeLatency(t * testing.T) {
 	t.Parallel()
-
 	var tests = map[string]struct {
 		d    time.Duration
+		isGKE bool
 		want Latency
 	}{
-		"zero": {
+		"gke": {
 			time.Duration(0),
-			Latency{Nanos: 0, Seconds: 0},
+			true,
+			GKELatency{Latency: "0s"},
 		},
-		"10 sec": {
-			time.Duration(10 * 1e9),
-			Latency{Nanos: 0, Seconds: 10},
-		},
-		"sec and nano": {
-			time.Duration(123 + 456*1e9),
-			Latency{Nanos: 123, Seconds: 456},
+		"gae": {
+			time.Duration(0),
+			false,
+			GAELatency{Seconds: 0, Nanos: 0},
 		},
 	}
 
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
-			assert.Equal(t, tt.want, MakeLatency(tt.d))
+			assert.Equal(t, tt.want, MakeLatency(tt.d, tt.isGKE))
+		})
+	}
+
+}
+
+func TestMakeGAELatency(t *testing.T) {
+	t.Parallel()
+
+	var tests = map[string]struct {
+		d    time.Duration
+		want GAELatency
+	}{
+		"zero": {
+			time.Duration(0),
+			GAELatency{Nanos: 0, Seconds: 0},
+		},
+		"10 sec": {
+			time.Duration(10 * 1e9),
+			GAELatency{Nanos: 0, Seconds: 10},
+		},
+		"sec and nano": {
+			time.Duration(123 + 456*1e9),
+			GAELatency{Nanos: 123, Seconds: 456},
+		},
+	}
+
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			assert.Equal(t, tt.want, makeGAELatency(tt.d))
 		})
 	}
 }

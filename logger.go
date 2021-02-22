@@ -25,11 +25,30 @@ var logLevelSeverity = map[zerolog.Level]string{
 	zerolog.FatalLevel: "CRITICAL",
 }
 
-func New(isDebug bool) *Logger {
+// NewProductionLogger returns a configured logger for production.
+// It outputs info level and above logs with sampling.
+func NewProductionLogger() *Logger {
 	logLevel := zerolog.InfoLevel
-	if isDebug {
-		logLevel = zerolog.DebugLevel
+	zerolog.SetGlobalLevel(logLevel)
+
+	zerolog.LevelFieldName = "severity"
+	zerolog.LevelFieldMarshalFunc = func(l zerolog.Level) string {
+		return logLevelSeverity[l]
 	}
+	zerolog.TimestampFieldName = "timestamp"
+	zerolog.TimeFieldFormat = time.RFC3339Nano
+
+	// default sampler
+	sampler := &zerolog.BasicSampler{N: 1}
+
+	logger := zerolog.New(os.Stderr).Sample(sampler).With().Timestamp().Logger()
+	return &Logger{&logger}
+}
+
+// NewDevelopmentLogger returns a configured logger for development.
+// It outputs debug level and above logs, and sampling is disabled.
+func NewDevelopmentLogger() *Logger {
+	logLevel := zerolog.DebugLevel
 	zerolog.SetGlobalLevel(logLevel)
 
 	zerolog.LevelFieldName = "severity"

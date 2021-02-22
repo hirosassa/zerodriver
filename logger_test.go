@@ -9,14 +9,14 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	logger := zerodriver.New(false)
+	logger := zerodriver.NewProductionLogger()
 	assert.IsType(t, &zerodriver.Logger{}, logger)
 }
 
 func TestLoggers(t *testing.T) {
 	t.Parallel()
 
-	log := zerodriver.New(false)
+	log := zerodriver.NewProductionLogger()
 
 	var tests = map[string]struct {
 		res  *zerodriver.Event
