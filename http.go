@@ -40,7 +40,7 @@ type GAELatency struct {
 	Nanos   int32 `json:"nanos"`
 }
 
-// HTTP adds thehttpRequest field to the *zerolog.Event context
+// HTTP adds the httpRequest field to the *zerolog.Event context
 func (e *Event) HTTP(req *HTTPPayload) *zerolog.Event {
 	return e.Event.Interface("httpRequest", req)
 }
