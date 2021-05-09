@@ -1,6 +1,7 @@
 package zerodriver
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/rs/zerolog"
@@ -17,21 +18,21 @@ func TestLabel(t *testing.T) {
 func TestLabels(t *testing.T) {
 	t.Parallel()
 
-	var e Event
-	tests := map[string]struct {
-		expect *zerolog.Event
-		labels []*label
-	}{
-		"success": {
-			expect: e.Dict("logging.googleapis.com/labels", zerolog.Dict().Fields(map[string]interface{}{"foo": "bar", "baz": "qux"})),
-			labels: []*label{Label("foo", "bar"), Label("baz", "qux")},
-		},
-	}
+	// replace writer
+	log := NewProductionLogger()
+	out := &bytes.Buffer{}
+	logger := zerolog.New(out).With().Logger()
+	log.Logger = &logger
 
-	for name, tt := range tests {
-		t.Run(name, func(t *testing.T) {
-			assert.Equal(t, tt.expect, e.Labels(tt.labels...))
-		})
-	}
+	log.Info().Labels(Label("foo", "bar"), Label("baz", "qux")).Msg("labels")
+	actual := string(out.Bytes())
+	out.Reset()
+
+	log.Info().Dict("logging.googleapis.com/labels", zerolog.Dict().
+		Str("baz", "qux").
+		Str("foo", "bar")).Msg("labels")
+	expected := string(out.Bytes())
+	out.Reset()
+
+	assert.Equal(t, expected, actual)
 }
-

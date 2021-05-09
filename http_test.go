@@ -1,6 +1,7 @@
 package zerodriver
 
 import (
+	"bytes"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -9,17 +10,44 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestHTTP(t *testing.T) {
 	t.Parallel()
 
-	req := &HTTPPayload{}
-	var e Event
-	event := e.HTTP(req)
+	// replace writer
+	log := NewProductionLogger()
+	out := &bytes.Buffer{}
+	logger := zerolog.New(out).With().Logger()
+	log.Logger = &logger
 
-	assert.Equal(t, e.Interface("httpreqest", req), event)
+	req := &HTTPPayload{RequestURL: "https://example.com"}
+	log.Info().HTTP(req).Msg("http request")
+	actual := string(out.Bytes())
+	out.Reset()
+
+	log.Info().Dict("httpRequest", zerolog.Dict().
+		Str("requestMethod", "").
+		Str("requestUrl", "https://example.com").
+		Str("requestSize", "").
+		Int("status", 0).
+		Str("responseSize", "").
+		Str("userAgent", "").
+		Str("remoteIp", "").
+		Str("serverIp", "").
+		Str("referer", "").
+		Interface("latency", nil).
+		Bool("cacheLookup", false).
+		Bool("cacheHit", false).
+		Bool("cacheValidatedWithOriginServer", false).
+		Str("cacheFillBytes", "").
+		Str("protocol", "")).
+		Msg("http request")
+	expected := string(out.Bytes())
+
+	assert.Equal(t, expected, actual)
 }
 
 func TestNewHTTP(t *testing.T) {
