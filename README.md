@@ -58,11 +58,10 @@ you can query logs or create metrics alert easier and efficiently on GCP Cloud L
 To log HTTP related metrics and information, you can use following function
 
 ```go
-func (e *Event) HTTP(req *zapdriver.HTTPPayload) *zerolog.Event
+func (e *Event) HTTP(req *HTTPPayload) *zerolog.Event
 ```
 
-This function feature is borrowed from zapdriver. You can generate `zerodriver.HTTPPayload` from `http.Request` and `http.Response` using `NewHTTP` function.
-Detail description of usage of these function is available [here](https://github.com/blendle/zapdriver#http).
+This feature is forked from zapdriver. You can generate `zerodriver.HTTPPayload` from `http.Request` and `http.Response` using `NewHTTP` function.
 Same as zapdriver.NewHTTP, following fields needs to be set manually:
 
 - `ServerIP`
@@ -71,11 +70,68 @@ Same as zapdriver.NewHTTP, following fields needs to be set manually:
 - `CacheHit`
 - `CacheValidatedWithOriginServer`
 - `CacheFillBytes`
- 
+
 Using these feature, you can log HTTP related information as follows,
 
 ```go
 p := NewHTTP(req, res)
 p.Latency = time.Since(start) // add some fields manually
 logger.Info().HTTP(p).Msg("request received")
+```
+
+#### Trace context
+
+To add trace information to your log, you can use `TraceContext`. The signature of the function is as follows:
+```go
+func (e *Event) TraceContext(trace string, spanId string, sampled bool, projectID string) *zerolog.Event
+```
+
+You can use this feature as follows:
+
+```go
+import	"go.opencensus.io/trace"
+
+span := trace.FromContext(r.Context()).SpanContext()
+logger.Info().TraceContext(span.TraceID.String(), span.SpanID.String(), true, "my-project").Msg("trace contexts")
+
+// {"severity":"INFO","logging.googleapis.com/trace":"projects/my-project/traces/00000000000000000000000000000000","logging.googleapis.com/spanId":"0000000000000000","logging.googleapis.com/trace_sampled":true,"message":"trace contexts"}
+```
+
+#### Labels
+
+You can add any "labels" to your log by following:
+
+```go
+logger.Info().Labels(zerodriver.Label("foo", "var")).Msg("labeled log")
+
+// {"severity":"INFO","logging.googleapis.com/labels":{"foo":"var"},"message":"labeled log"}
+```
+
+#### Operations
+
+You can add additional information about a potentially long-running operation with which a log entry is associated by following function:
+
+```go
+func (e *Event) Operation(id, producer string, first, last bool) *zerolog.Event
+```
+Log entries with the same `id` are assumed to be part of the same operation.
+The producer is an arbitrary identifier that should be globally unique amongst all the logs of all your applications (meaning it should probably be the unique name of the current application).
+You should set `first` to true for the first log in the operation, and `last` to true for the final log of the operation.
+
+Also see, https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#LogEntryOperation
+
+For readable implementation of `operation` log, you can use following functions:
+
+```go
+func (e *Event) OperationStart(id, producer string) *zerolog.Event
+func (e *Event) OperationContinue(id, producer string) *zerolog.Event
+func (e *Event) OperationEnd(id, producer string) *zerolog.Event
+```
+
+A concrete example of operation log is as follows:
+
+```go
+logger.Info().OperationStart("foo", "bar").Msg("started")
+logger.Debug().OperationContinue("foo", "bar").Msg("processing")
+logger.Info().OperationEnd("foo", "bar").Msg("done")
 ```
