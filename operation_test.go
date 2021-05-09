@@ -18,7 +18,7 @@ func TestOperation(t *testing.T) {
 	log.Logger = &logger
 
 	log.Info().Operation("id", "producer", true, false).Msg("operation")
-	actual := string(out.Bytes())
+	actual := out.String()
 	out.Reset()
 
 	log.Info().Dict("logging.googleapis.com/operation", zerolog.Dict().
@@ -27,7 +27,7 @@ func TestOperation(t *testing.T) {
 		Bool("first", true).
 		Bool("last", false)).
 		Msg("operation")
-	expected := string(out.Bytes())
+	expected := out.String()
 
 	assert.Equal(t, expected, actual)
 }
@@ -42,7 +42,7 @@ func TestOperationStart(t *testing.T) {
 	log.Logger = &logger
 
 	log.Info().OperationStart("id", "producer").Msg("operation start")
-	actual := string(out.Bytes())
+	actual := out.String()
 	out.Reset()
 
 	log.Info().Dict("logging.googleapis.com/operation", zerolog.Dict().
@@ -50,7 +50,7 @@ func TestOperationStart(t *testing.T) {
 		Str("producer", "producer").
 		Bool("first", true).
 		Bool("last", false)).Msg("operation start")
-	expected := string(out.Bytes())
+	expected := out.String()
 
 	assert.Equal(t, expected, actual)
 }
@@ -65,7 +65,7 @@ func TestOperationContinue(t *testing.T) {
 	log.Logger = &logger
 
 	log.Info().OperationContinue("id", "producer").Msg("operation continue")
-	actual := string(out.Bytes())
+	actual := out.String()
 	out.Reset()
 
 	log.Info().Dict("logging.googleapis.com/operation", zerolog.Dict().
@@ -73,7 +73,7 @@ func TestOperationContinue(t *testing.T) {
 		Str("producer", "producer").
 		Bool("first", false).
 		Bool("last", false)).Msg("operation continue")
-	expected := string(out.Bytes())
+	expected := out.String()
 
 	assert.Equal(t, expected, actual)
 }
@@ -88,7 +88,7 @@ func TestOperationEnd(t *testing.T) {
 	log.Logger = &logger
 
 	log.Info().OperationEnd("id", "producer").Msg("operation end")
-	actual := string(out.Bytes())
+	actual := out.String()
 	out.Reset()
 
 	log.Info().Dict("logging.googleapis.com/operation", zerolog.Dict().
@@ -96,7 +96,7 @@ func TestOperationEnd(t *testing.T) {
 		Str("producer", "producer").
 		Bool("first", false).
 		Bool("last", true)).Msg("operation end")
-	expected := string(out.Bytes())
+	expected := out.String()
 
 	assert.Equal(t, expected, actual)
 }

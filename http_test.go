@@ -25,7 +25,7 @@ func TestHTTP(t *testing.T) {
 
 	req := &HTTPPayload{RequestURL: "https://example.com"}
 	log.Info().HTTP(req).Msg("http request")
-	actual := string(out.Bytes())
+	actual := out.String()
 	out.Reset()
 
 	log.Info().Dict("httpRequest", zerolog.Dict().
@@ -45,7 +45,7 @@ func TestHTTP(t *testing.T) {
 		Str("cacheFillBytes", "").
 		Str("protocol", "")).
 		Msg("http request")
-	expected := string(out.Bytes())
+	expected := out.String()
 
 	assert.Equal(t, expected, actual)
 }

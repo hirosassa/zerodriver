@@ -25,13 +25,13 @@ func TestLabels(t *testing.T) {
 	log.Logger = &logger
 
 	log.Info().Labels(Label("foo", "bar"), Label("baz", "qux")).Msg("labels")
-	actual := string(out.Bytes())
+	actual := out.String()
 	out.Reset()
 
 	log.Info().Dict("logging.googleapis.com/labels", zerolog.Dict().
 		Str("baz", "qux").
 		Str("foo", "bar")).Msg("labels")
-	expected := string(out.Bytes())
+	expected := out.String()
 	out.Reset()
 
 	assert.Equal(t, expected, actual)
