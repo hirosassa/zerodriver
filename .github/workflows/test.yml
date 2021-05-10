@@ -5,7 +5,9 @@ on:
     paths:
     - '**.go'
     - '.github/workflows/test.yml'
-
+  pull_request:
+    branches:
+      - master
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -17,4 +19,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Test
-        run: go test -v -race ./...
+        run: go test -v ./... -coverprofile cover.out
+
+      - name: Convert coverage to lcov
+        uses: jandelgado/gcov2lcov-action@v1.0.8
+        if: github.ref == 'refs/heads/master'
+        with:
+          infile: cover.out
+          outfile: cover.lcov
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        if: github.ref == 'refs/heads/master'
+        with:
+          github-token: ${{ secrets.github_token }}
+          path-to-lcov: cover.lcov
