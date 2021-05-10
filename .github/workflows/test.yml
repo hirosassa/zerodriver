@@ -5,7 +5,9 @@ on:
     paths:
     - '**.go'
     - '.github/workflows/test.yml'
-
+  pull_request:
+    branches:
+      - master
 jobs:
   test:
     runs-on: ubuntu-latest
