@@ -75,11 +75,11 @@ func TestFatal(t *testing.T) {
 	t.Parallel()
 
 	// patch os.Exit
-    fakeExit := func(int) {
-        panic("os.Exit called")
-    }
-    patch := monkey.Patch(os.Exit, fakeExit)
-    defer patch.Unpatch()
+	fakeExit := func(int) {
+		panic("os.Exit called")
+	}
+	patch := monkey.Patch(os.Exit, fakeExit)
+	defer patch.Unpatch()
 
 	// replace writer
 	log := NewProductionLogger()
@@ -88,7 +88,7 @@ func TestFatal(t *testing.T) {
 	log.Logger = &logger
 
 	defer func() {
-		recover()
+		_ = recover()
 		actual := out.String()
 		out.Reset()
 
@@ -110,7 +110,7 @@ func TestPanic(t *testing.T) {
 	log.Logger = &logger
 
 	defer func() {
-		recover()
+		_ = recover()
 		actual := out.String()
 		out.Reset()
 
