@@ -4,6 +4,7 @@
 [![Actions Status: golangci-lint](https://github.com/hirosassa/zerodriver/workflows/golangci-lint/badge.svg)](https://github.com/hirosassa/zerodriver/actions?query=workflow%3A"golangci-lint")
 [![Go Reference](https://pkg.go.dev/badge/github.com/hirosassa/zerodriver.svg)](https://pkg.go.dev/github.com/hirosassa/zerodriver)
 [![Go Report Card](https://goreportcard.com/badge/github.com/hirosassa/zerodriver)](https://goreportcard.com/report/github.com/hirosassa/zerodriver)
+[![Coverage Status](https://coveralls.io/repos/github/hirosassa/zerodriver/badge.svg?branch=master)](https://coveralls.io/github/hirosassa/zerodriver?branch=master)
 [![Apache-2.0](https://img.shields.io/github/license/hirosassa/zerodriver)](LICENSE)
 
 [Zerolog](https://github.com/rs/zerolog) based [Cloud Logging](https://cloud.google.com/logging) (formerly Stackdriver Logging). This package is inspired by [Zapdriver](https://github.com/blendle/zapdriver).
