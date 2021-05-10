@@ -21,14 +21,14 @@ jobs:
 
       - name: Convert coverage to lcov
         uses: jandelgado/gcov2lcov-action@v1.0.8
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         with:
           infile: cover.out
           outfile: cover.lcov
 
       - name: Coveralls
         uses: coverallsapp/github-action@master
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         with:
           github-token: ${{ secrets.github_token }}
           path-to-lcov: cover.lcov
