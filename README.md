@@ -13,7 +13,7 @@
 
 This package provides simple structured logger optimized for [Cloud Logging](https://cloud.google.com/logging) based on [zerolog](https://github.com/rs/zerolog).
 
-Key features of tbls are:
+Key features of zerodriver are:
 
 - zerolog based simple method chaining API
 - optimized for [Cloud Logging LogEntry](https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry) format
