@@ -7,7 +7,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/hirosassa/zerodriver/badge.svg?branch=master)](https://coveralls.io/github/hirosassa/zerodriver?branch=master)
 [![Apache-2.0](https://img.shields.io/github/license/hirosassa/zerodriver)](LICENSE)
 
-[Zerolog](https://github.com/rs/zerolog) based [Cloud Logging](https://cloud.google.com/logging) (formerly Stackdriver Logging). This package is inspired by [Zapdriver](https://github.com/blendle/zapdriver).
+[Zerolog](https://github.com/rs/zerolog) based logging libary optimized for [Cloud Logging](https://cloud.google.com/logging) (formerly Stackdriver Logging). This package is inspired by [Zapdriver](https://github.com/blendle/zapdriver).
 
 ## What is this package?
 
