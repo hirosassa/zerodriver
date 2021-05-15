@@ -42,7 +42,7 @@ type GAELatency struct {
 
 // HTTP adds the httpRequest field to the *zerolog.Event context
 func (e *Event) HTTP(req *HTTPPayload) *zerolog.Event {
-	return e.Event.Interface("httpRequest", req)
+	return e.event.Interface("httpRequest", req)
 }
 
 // NewHTTP returns a HTTPPayload struct.

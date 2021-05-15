@@ -36,3 +36,26 @@ func TestLabels(t *testing.T) {
 
 	assert.Equal(t, expected, actual)
 }
+
+func TestLabelsMultiple(t *testing.T) {
+	t.Parallel()
+
+	// replace writer
+	log := NewProductionLogger()
+	out := &bytes.Buffer{}
+	logger := zerolog.New(out).With().Logger()
+	log.Logger = &logger
+
+	labeledLog := log.Info().Labels(Label("foo", "bar"))
+	labeledLog.Labels(Label("baz", "qux")).Msg("labels")
+	actual := out.String()
+	out.Reset()
+
+	log.Info().Dict("logging.googleapis.com/labels", zerolog.Dict().
+		Str("baz", "qux").
+		Str("foo", "bar")).Msg("labels")
+	expected := out.String()
+	out.Reset()
+
+	assert.Equal(t, expected, actual)
+}

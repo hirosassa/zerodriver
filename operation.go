@@ -36,7 +36,7 @@ func (e *Event) Operation(id, producer string, first, last bool) *zerolog.Event 
 		Last:     last,
 	}
 
-	return e.Event.Interface("logging.googleapis.com/operation", op)
+	return e.event.Interface("logging.googleapis.com/operation", op)
 }
 
 // OperationStart is a function for logging `Operation`. It should be called

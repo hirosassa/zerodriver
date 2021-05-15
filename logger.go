@@ -12,7 +12,13 @@ type Logger struct {
 }
 
 type Event struct {
-	*zerolog.Event
+	labels *labels
+	event  *zerolog.Event
+}
+
+func newEvent(e *zerolog.Event) *Event {
+	lbls := newLabels()
+	return &Event{labels: lbls, event: e}
 }
 
 // See: https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#LogSeverity
@@ -66,52 +72,52 @@ func NewDevelopmentLogger() *Logger {
 
 func (l *Logger) Trace() *Event {
 	e := l.Logger.Trace()
-	return &Event{e}
+	return newEvent(e)
 }
 
 func (l *Logger) Debug() *Event {
 	e := l.Logger.Debug()
-	return &Event{e}
+	return newEvent(e)
 }
 
 func (l *Logger) Info() *Event {
 	e := l.Logger.Info()
-	return &Event{e}
+	return newEvent(e)
 }
 
 func (l *Logger) Warn() *Event {
 	e := l.Logger.Warn()
-	return &Event{e}
+	return newEvent(e)
 }
 
 func (l *Logger) Error() *Event {
 	e := l.Logger.Error()
-	return &Event{e}
+	return newEvent(e)
 }
 
 func (l *Logger) Err(err error) *Event {
 	e := l.Logger.Error().Err(err)
-	return &Event{e}
+	return newEvent(e)
 }
 
 func (l *Logger) Fatal() *Event {
 	e := l.Logger.Fatal()
-	return &Event{e}
+	return newEvent(e)
 }
 
 func (l *Logger) Panic() *Event {
 	e := l.Logger.Panic()
-	return &Event{e}
+	return newEvent(e)
 }
 
 func (l *Logger) WithLevel(level zerolog.Level) *Event {
 	e := l.Logger.WithLevel(level)
-	return &Event{e}
+	return newEvent(e)
 }
 
 func (l *Logger) Log() *Event {
 	e := l.Logger.Log()
-	return &Event{e}
+	return newEvent(e)
 }
 
 func (l *Logger) Print(v ...interface{}) {

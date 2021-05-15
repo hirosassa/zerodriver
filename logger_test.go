@@ -26,42 +26,42 @@ func TestLoggers(t *testing.T) {
 
 	log := NewProductionLogger()
 
-	var tests = map[string]struct {
+	tests := map[string]struct {
 		res     *Event
 		want    *Event
 		wantErr error
 	}{
 		"trace": {
 			res:  log.Trace(),
-			want: &Event{log.Logger.Trace()},
+			want: newEvent(log.Logger.Trace()),
 		},
 		"debug": {
 			res:  log.Debug(),
-			want: &Event{log.Logger.Debug()},
+			want: newEvent(log.Logger.Debug()),
 		},
 		"info": {
 			res:  log.Info(),
-			want: &Event{log.Logger.Info()},
+			want: newEvent(log.Logger.Info()),
 		},
 		"warn": {
 			res:  log.Warn(),
-			want: &Event{log.Logger.Warn()},
+			want: newEvent(log.Logger.Warn()),
 		},
 		"error": {
 			res:  log.Error(),
-			want: &Event{log.Logger.Error()},
+			want: newEvent(log.Logger.Error()),
 		},
 		"err": {
 			res:  log.Err(errors.New("some error")),
-			want: &Event{log.Logger.Err(errors.New("some error"))},
+			want: newEvent(log.Logger.Err(errors.New("some error"))),
 		},
 		"with level": {
 			res:  log.WithLevel(zerolog.InfoLevel),
-			want: &Event{log.Logger.WithLevel(zerolog.InfoLevel)},
+			want: newEvent(log.Logger.WithLevel(zerolog.InfoLevel)),
 		},
 		"log": {
 			res:  log.Log(),
-			want: &Event{log.Logger.Log()},
+			want: newEvent(log.Logger.Log()),
 		},
 	}
 	for name, tt := range tests {

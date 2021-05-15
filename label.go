@@ -30,18 +30,23 @@ func Label(key, value string) *label {
 // Labels takes label structs, filters the ones that have their key start with the
 // string `labels.` and their value type set to string type. It then wraps those
 // key/value pairs in a top-level `labels` namespace.
-func (e *Event) Labels(labels ...*label) *zerolog.Event {
-	lbls := newLabels()
-
-	lbls.mutex.Lock()
+func (e *Event) Labels(labels ...*label) *Event {
+	e.labels.mutex.Lock()
 	for i := range labels {
 		if isLabelEvent(labels[i]) {
-			lbls.store[strings.Replace(labels[i].key, "labels.", "", 1)] = labels[i].value
+			e.labels.store[strings.Replace(labels[i].key, "labels.", "", 1)] = labels[i].value
 		}
 	}
-	lbls.mutex.Unlock()
+	e.labels.mutex.Unlock()
 
-	return e.Event.Dict("logging.googleapis.com/labels", zerolog.Dict().Fields(lbls.store))
+	return e
+}
+
+func (e *Event) setLabels() {
+	if len(e.labels.store) == 0 {
+		return
+	}
+	e.event = e.event.Dict("logging.googleapis.com/labels", zerolog.Dict().Fields(e.labels.store))
 }
 
 func isLabelEvent(label *label) bool {
