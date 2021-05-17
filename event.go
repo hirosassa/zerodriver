@@ -64,7 +64,7 @@ func (e *Event) EmbedObject(obj zerolog.LogObjectMarshaler) *Event {
 }
 
 func (e *Event) Enabled() bool {
-	return e.Enabled()
+	return e.event.Enabled()
 }
 
 func (e *Event) Err(err error) *Event {
