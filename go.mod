@@ -1,6 +1,6 @@
 module github.com/hirosassa/zerodriver
 
-go 1.16
+go 1.17
 
 require (
 	bou.ke/monkey v1.0.2
@@ -9,3 +9,5 @@ require (
 	github.com/rs/zerolog v1.20.0
 	github.com/stretchr/testify v1.3.0
 )
+
+require github.com/pmezard/go-difflib v1.0.0 // indirect
