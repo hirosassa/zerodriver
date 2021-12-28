@@ -7,9 +7,9 @@ import (
 	"github.com/rs/zerolog"
 )
 
-type label struct {
-	key   string
-	value string
+type LabelSource struct {
+	Key   string
+	Value string
 }
 
 type labels struct {
@@ -23,20 +23,20 @@ func newLabels() *labels {
 
 // Label adds an optional label to the payload in the format of `key: value`.
 // Key of label must start with `labels.`
-func Label(key, value string) *label {
-	return &label{key: "labels." + key, value: value}
+func Label(key, value string) *LabelSource {
+	return &LabelSource{Key: "labels." + key, Value: value}
 }
 
 // Labels takes label structs, filters the ones that have their key start with the
 // string `labels.` and their value type set to string type. It then wraps those
 // key/value pairs in a top-level `labels` namespace.
-func (e *Event) Labels(labels ...*label) *zerolog.Event {
+func (e *Event) Labels(labels ...*LabelSource) *zerolog.Event {
 	lbls := newLabels()
 
 	lbls.mutex.Lock()
 	for i := range labels {
 		if isLabelEvent(labels[i]) {
-			lbls.store[strings.Replace(labels[i].key, "labels.", "", 1)] = labels[i].value
+			lbls.store[strings.Replace(labels[i].Key, "labels.", "", 1)] = labels[i].Value
 		}
 	}
 	lbls.mutex.Unlock()
@@ -44,6 +44,6 @@ func (e *Event) Labels(labels ...*label) *zerolog.Event {
 	return e.Event.Dict("logging.googleapis.com/labels", zerolog.Dict().Fields(lbls.store))
 }
 
-func isLabelEvent(label *label) bool {
-	return strings.HasPrefix(label.key, "labels.")
+func isLabelEvent(label *LabelSource) bool {
+	return strings.HasPrefix(label.Key, "labels.")
 }

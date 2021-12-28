@@ -12,7 +12,7 @@ func TestLabel(t *testing.T) {
 	t.Parallel()
 
 	l := Label("key", "value")
-	assert.Equal(t, &label{key: "labels.key", value: "value"}, l)
+	assert.Equal(t, &LabelSource{Key: "labels.key", Value: "value"}, l)
 }
 
 func TestLabels(t *testing.T) {
