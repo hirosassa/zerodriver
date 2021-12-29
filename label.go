@@ -27,7 +27,7 @@ func Label(key, value string) *LabelSource {
 	return &LabelSource{Key: "labels." + key, Value: value}
 }
 
-// Labels takes label structs, filters the ones that have their key start with the
+// Labels takes LabelSource structs, filters the ones that have their key start with the
 // string `labels.` and their value type set to string type. It then wraps those
 // key/value pairs in a top-level `labels` namespace.
 func (e *Event) Labels(labels ...*LabelSource) *zerolog.Event {
