@@ -2,7 +2,6 @@ package zerodriver
 
 import (
 	"strings"
-	"sync"
 
 	"github.com/rs/zerolog"
 )
@@ -14,11 +13,10 @@ type LabelSource struct {
 
 type labels struct {
 	store map[string]interface{}
-	mutex *sync.RWMutex
 }
 
 func newLabels() *labels {
-	return &labels{store: map[string]interface{}{}, mutex: &sync.RWMutex{}}
+	return &labels{store: map[string]interface{}{}}
 }
 
 // Label adds an optional label to the payload in the format of `key: value`.
@@ -33,13 +31,11 @@ func Label(key, value string) *LabelSource {
 func (e *Event) Labels(labels ...*LabelSource) *zerolog.Event {
 	lbls := newLabels()
 
-	lbls.mutex.Lock()
 	for i := range labels {
 		if isLabelEvent(labels[i]) {
 			lbls.store[strings.Replace(labels[i].Key, "labels.", "", 1)] = labels[i].Value
 		}
 	}
-	lbls.mutex.Unlock()
 
 	return e.Event.Dict("logging.googleapis.com/labels", zerolog.Dict().Fields(lbls.store))
 }
