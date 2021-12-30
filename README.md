@@ -137,3 +137,38 @@ logger.Info().OperationStart("foo", "bar").Msg("started")
 logger.Debug().OperationContinue("foo", "bar").Msg("processing")
 logger.Info().OperationEnd("foo", "bar").Msg("done")
 ```
+
+#### Using Error Reporting
+To report errors using StackDriver's Error Reporting tool, a log line needs to follow a separate log format described in the [Error Reporting](https://cloud.google.com/error-reporting/docs/formatting-error-messages) documentation.
+
+A concrete example of error reporting format log is as follows:
+```go
+logger := zerodriver.NewProductionLogger(
+    zerodriver.WithServiceName("my service"),
+    zerodriver.WithReportAllErrors(),
+)
+```
+
+
+#### Reporting errors manually
+If you do not want every error to be reported, you can attach ErrorReport() to log call manually:
+```go
+logger.Error("An error to be reported!").ErrorReport(runtime.Caller(0))
+```
+※ When you use `zerodriver.WithReportAllErrors()`, the manually added error report will be duplicated.
+
+※ Please keep in mind that ErrorReport needs a `ServiceContext` attached to the log entry. If you did not configure this using `WithServiceContext`, error reports will get attached using service name as `unknown`. To prevent this from happening, either configure your core or attach service context before (or when) using the logger:
+```go
+logger.Error().
+    ServiceContext().
+    ErrorReport(runtime.Caller(0).
+    Msg("An error message to be reported!")
+```
+Or permanently attach it to your logger
+```go
+logger := zerodriver.NewProductionLogger(zerodriver.WithServiceName("my service"))
+logger.Error().
+    ErrorReport(runtime.Caller(0).
+    Msg("An error message to be reported!")
+```
+
