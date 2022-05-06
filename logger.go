@@ -1,6 +1,7 @@
 package zerodriver
 
 import (
+	"io"
 	"os"
 	"time"
 
@@ -125,4 +126,12 @@ func (l *Logger) Printf(format string, v ...interface{}) {
 func (l Logger) Write(p []byte) (n int, err error) {
 	n, err = l.Logger.Write(p)
 	return n, err
+}
+
+func (l Logger) Output(w io.Writer) Logger {
+	logger := l.Logger.Output(w)
+	l2 := Logger{
+		Logger: &logger,
+	}
+	return l2
 }

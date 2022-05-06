@@ -2,6 +2,7 @@ package zerodriver
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"os"
 	"testing"
@@ -26,7 +27,7 @@ func TestLoggers(t *testing.T) {
 
 	log := NewProductionLogger()
 
-	var tests = map[string]struct {
+	tests := map[string]struct {
 		res     *Event
 		want    *Event
 		wantErr error
@@ -163,4 +164,19 @@ func TestWrite(t *testing.T) {
 	n, err := log.Write([]byte("abc"))
 	assert.Equal(t, 3, n)
 	assert.NoError(t, err)
+}
+
+func TestOutput(t *testing.T) {
+	t.Parallel()
+
+	out := &bytes.Buffer{}
+	log := NewProductionLogger().Output(out)
+
+	_, err := log.Write([]byte("abc"))
+	assert.NoError(t, err)
+
+	var output map[string]interface{}
+	err = json.NewDecoder(out).Decode(&output)
+	assert.NoError(t, err)
+	assert.Equal(t, "abc", output["message"], "Logger should write to io.Writer")
 }
