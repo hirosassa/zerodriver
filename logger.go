@@ -18,6 +18,7 @@ type Event struct {
 
 // See: https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#LogSeverity
 var logLevelSeverity = map[zerolog.Level]string{
+	zerolog.TraceLevel: "TRACE",
 	zerolog.DebugLevel: "DEBUG",
 	zerolog.InfoLevel:  "INFO",
 	zerolog.WarnLevel:  "WARNING",
