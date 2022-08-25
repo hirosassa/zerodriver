@@ -1,6 +1,6 @@
 module github.com/hirosassa/zerodriver
 
-go 1.17
+go 1.19
 
 require (
 	bou.ke/monkey v1.0.2

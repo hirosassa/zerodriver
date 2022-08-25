@@ -2,7 +2,7 @@ package zerodriver
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -53,7 +53,7 @@ func TestHTTP(t *testing.T) {
 func TestNewHTTP(t *testing.T) {
 	t.Parallel()
 
-	var tests = map[string]struct {
+	tests := map[string]struct {
 		req  *http.Request
 		res  *http.Response
 		want *HTTPPayload
@@ -69,20 +69,22 @@ func TestNewHTTP(t *testing.T) {
 			&HTTPPayload{RequestURL: "https://example.com"},
 		},
 		"RequestSize": {
-			&http.Request{ContentLength: 5, Body: ioutil.NopCloser(strings.NewReader("12345"))},
+			&http.Request{ContentLength: 5, Body: io.NopCloser(strings.NewReader("12345"))},
 			nil,
 			&HTTPPayload{RequestSize: "5"},
 		},
 
 		"ResponseSize": {
 			nil,
-			&http.Response{ContentLength: 5, Body: ioutil.NopCloser(strings.NewReader("12345"))},
+			&http.Response{ContentLength: 5, Body: io.NopCloser(strings.NewReader("12345"))},
 			&HTTPPayload{ResponseSize: "5"},
 		},
 	}
 
 	for name, tt := range tests {
+		tt := tt
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
 			if diff := cmp.Diff(tt.want, NewHTTP(tt.req, tt.res)); diff != "" {
 				t.Errorf("HTTPPayload differs (-got +want)\n%s", diff)
 			}
@@ -92,7 +94,7 @@ func TestNewHTTP(t *testing.T) {
 
 func TestMakeLatency(t *testing.T) {
 	t.Parallel()
-	var tests = map[string]struct {
+	tests := map[string]struct {
 		d     time.Duration
 		isGKE bool
 		want  Latency
@@ -110,17 +112,18 @@ func TestMakeLatency(t *testing.T) {
 	}
 
 	for name, tt := range tests {
+		tt := tt
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
 			assert.Equal(t, tt.want, MakeLatency(tt.d, tt.isGKE))
 		})
 	}
-
 }
 
 func TestMakeGAELatency(t *testing.T) {
 	t.Parallel()
 
-	var tests = map[string]struct {
+	tests := map[string]struct {
 		d    time.Duration
 		want GAELatency
 	}{
@@ -139,7 +142,9 @@ func TestMakeGAELatency(t *testing.T) {
 	}
 
 	for name, tt := range tests {
+		tt := tt
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
 			assert.Equal(t, tt.want, makeGAELatency(tt.d))
 		})
 	}
@@ -148,7 +153,7 @@ func TestMakeGAELatency(t *testing.T) {
 func TestRemoteIP(t *testing.T) {
 	t.Parallel()
 
-	var tests = map[string]struct {
+	tests := map[string]struct {
 		req  *http.Request
 		want string
 	}{
@@ -172,7 +177,9 @@ func TestRemoteIP(t *testing.T) {
 		},
 	}
 	for name, tt := range tests {
+		tt := tt
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
 			assert.Equal(t, tt.want, remoteIP(tt.req))
 		})
 	}
