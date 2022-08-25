@@ -13,11 +13,13 @@ import (
 )
 
 func TestNewProduction(t *testing.T) {
+	t.Parallel()
 	logger := NewProductionLogger()
 	assert.IsType(t, &Logger{}, logger)
 }
 
 func TestNewDevelopment(t *testing.T) {
+	t.Parallel()
 	logger := NewDevelopmentLogger()
 	assert.IsType(t, &Logger{}, logger)
 }
@@ -66,7 +68,9 @@ func TestLoggers(t *testing.T) {
 		},
 	}
 	for name, tt := range tests {
+		tt := tt
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
 			assert.Equal(t, tt.want, tt.res)
 		})
 	}
@@ -124,6 +128,8 @@ func TestPanic(t *testing.T) {
 }
 
 func TestPrint(t *testing.T) {
+	t.Parallel()
+
 	// replace writer
 	log := NewDevelopmentLogger()
 	out := &bytes.Buffer{}
@@ -141,6 +147,8 @@ func TestPrint(t *testing.T) {
 }
 
 func TestPrintf(t *testing.T) {
+	t.Parallel()
+
 	// replace writer
 	log := NewDevelopmentLogger()
 	out := &bytes.Buffer{}
