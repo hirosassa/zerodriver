@@ -1,9 +1,5 @@
 package zerodriver
 
-import (
-	"github.com/rs/zerolog"
-)
-
 // operation is the complete payload that can be interpreted by Cloud Logging as
 // an operation.
 // see: https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#LogEntryOperation
@@ -28,7 +24,7 @@ type operation struct {
 //
 // Additional information about a potentially long-running operation with which
 // a log entry is associated.
-func (e *Event) Operation(id, producer string, first, last bool) *zerolog.Event {
+func (e *Event) Operation(id, producer string, first, last bool) *Event {
 	op := &operation{
 		ID:       id,
 		Producer: producer,
@@ -36,23 +32,24 @@ func (e *Event) Operation(id, producer string, first, last bool) *zerolog.Event 
 		Last:     last,
 	}
 
-	return e.Event.Interface("logging.googleapis.com/operation", op)
+	e.Event.Interface("logging.googleapis.com/operation", op)
+	return e
 }
 
 // OperationStart is a function for logging `Operation`. It should be called
 // for the first operation log.
-func (e *Event) OperationStart(id, producer string) *zerolog.Event {
+func (e *Event) OperationStart(id, producer string) *Event {
 	return e.Operation(id, producer, true, false)
 }
 
 // OperationContinue is a function for logging `Operation`. It should be called
 // for any non-start/end operation log.
-func (e *Event) OperationContinue(id, producer string) *zerolog.Event {
+func (e *Event) OperationContinue(id, producer string) *Event {
 	return e.Operation(id, producer, false, false)
 }
 
 // OperationEnd is a function for logging `Operation`. It should be called
 // for the last operation log.
-func (e *Event) OperationEnd(id, producer string) *zerolog.Event {
+func (e *Event) OperationEnd(id, producer string) *Event {
 	return e.Operation(id, producer, false, true)
 }

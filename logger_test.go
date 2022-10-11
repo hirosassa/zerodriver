@@ -36,35 +36,35 @@ func TestLoggers(t *testing.T) {
 	}{
 		"trace": {
 			res:  log.Trace(),
-			want: &Event{log.Logger.Trace()},
+			want: &Event{Event: log.Logger.Trace(), config: &config{}, level: zerolog.TraceLevel},
 		},
 		"debug": {
 			res:  log.Debug(),
-			want: &Event{log.Logger.Debug()},
+			want: &Event{Event: log.Logger.Debug(), config: &config{}, level: zerolog.DebugLevel},
 		},
 		"info": {
 			res:  log.Info(),
-			want: &Event{log.Logger.Info()},
+			want: &Event{Event: log.Logger.Info(), config: &config{}, level: zerolog.InfoLevel},
 		},
 		"warn": {
 			res:  log.Warn(),
-			want: &Event{log.Logger.Warn()},
+			want: &Event{Event: log.Logger.Warn(), config: &config{}, level: zerolog.WarnLevel},
 		},
 		"error": {
 			res:  log.Error(),
-			want: &Event{log.Logger.Error()},
+			want: &Event{Event: log.Logger.Error(), config: &config{}, level: zerolog.ErrorLevel},
 		},
 		"err": {
 			res:  log.Err(errors.New("some error")),
-			want: &Event{log.Logger.Err(errors.New("some error"))},
+			want: &Event{Event: log.Logger.Err(errors.New("some error")), config: &config{}, level: zerolog.ErrorLevel},
 		},
 		"with level": {
 			res:  log.WithLevel(zerolog.InfoLevel),
-			want: &Event{log.Logger.WithLevel(zerolog.InfoLevel)},
+			want: &Event{Event: log.Logger.Info(), config: &config{}, level: zerolog.InfoLevel},
 		},
 		"log": {
 			res:  log.Log(),
-			want: &Event{log.Logger.Log()},
+			want: &Event{Event: log.Logger.Log(), config: &config{}, level: zerolog.NoLevel},
 		},
 	}
 	for name, tt := range tests {

@@ -8,12 +8,21 @@ import (
 	"github.com/rs/zerolog"
 )
 
+type config struct {
+	serviceName     string
+	reportAllErrors bool
+}
+
 type Logger struct {
 	*zerolog.Logger
+	config *config
 }
 
 type Event struct {
 	*zerolog.Event
+
+	config *config
+	level  zerolog.Level
 }
 
 // See: https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#LogSeverity
@@ -28,7 +37,7 @@ var logLevelSeverity = map[zerolog.Level]string{
 
 // NewProductionLogger returns a configured logger for production.
 // It outputs info level and above logs with sampling.
-func NewProductionLogger() *Logger {
+func NewProductionLogger(opts ...Option) *Logger {
 	logLevel := zerolog.InfoLevel
 	zerolog.SetGlobalLevel(logLevel)
 
@@ -43,12 +52,13 @@ func NewProductionLogger() *Logger {
 	sampler := &zerolog.BasicSampler{N: 1}
 
 	logger := zerolog.New(os.Stderr).Sample(sampler).With().Timestamp().Logger()
-	return &Logger{&logger}
+	logger.With().Caller().Caller()
+	return &Logger{Logger: &logger, config: newConfig(opts...)}
 }
 
 // NewDevelopmentLogger returns a configured logger for development.
 // It outputs debug level and above logs, and sampling is disabled.
-func NewDevelopmentLogger() *Logger {
+func NewDevelopmentLogger(opts ...Option) *Logger {
 	logLevel := zerolog.DebugLevel
 	zerolog.SetGlobalLevel(logLevel)
 
@@ -60,59 +70,59 @@ func NewDevelopmentLogger() *Logger {
 	zerolog.TimeFieldFormat = time.RFC3339Nano
 
 	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
-	return &Logger{&logger}
+	return &Logger{Logger: &logger, config: newConfig(opts...)}
 }
 
 // To use method chain we need followings
 
 func (l *Logger) Trace() *Event {
 	e := l.Logger.Trace()
-	return &Event{e}
+	return &Event{Event: e, config: l.config, level: zerolog.TraceLevel}
 }
 
 func (l *Logger) Debug() *Event {
 	e := l.Logger.Debug()
-	return &Event{e}
+	return &Event{Event: e, config: l.config, level: zerolog.DebugLevel}
 }
 
 func (l *Logger) Info() *Event {
 	e := l.Logger.Info()
-	return &Event{e}
+	return &Event{Event: e, config: l.config, level: zerolog.InfoLevel}
 }
 
 func (l *Logger) Warn() *Event {
 	e := l.Logger.Warn()
-	return &Event{e}
+	return &Event{Event: e, config: l.config, level: zerolog.WarnLevel}
 }
 
 func (l *Logger) Error() *Event {
 	e := l.Logger.Error()
-	return &Event{e}
+	return &Event{Event: e, config: l.config, level: zerolog.ErrorLevel}
 }
 
 func (l *Logger) Err(err error) *Event {
 	e := l.Logger.Error().Err(err)
-	return &Event{e}
+	return &Event{Event: e, config: l.config, level: zerolog.ErrorLevel}
 }
 
 func (l *Logger) Fatal() *Event {
 	e := l.Logger.Fatal()
-	return &Event{e}
+	return &Event{Event: e, config: l.config, level: zerolog.FatalLevel}
 }
 
 func (l *Logger) Panic() *Event {
 	e := l.Logger.Panic()
-	return &Event{e}
+	return &Event{Event: e, config: l.config, level: zerolog.PanicLevel}
 }
 
 func (l *Logger) WithLevel(level zerolog.Level) *Event {
 	e := l.Logger.WithLevel(level)
-	return &Event{e}
+	return &Event{Event: e, config: l.config, level: level}
 }
 
 func (l *Logger) Log() *Event {
 	e := l.Logger.Log()
-	return &Event{e}
+	return &Event{Event: e, config: l.config, level: zerolog.NoLevel}
 }
 
 func (l *Logger) Print(v ...interface{}) {

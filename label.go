@@ -28,7 +28,7 @@ func Label(key, value string) *LabelSource {
 // Labels takes LabelSource structs, filters the ones that have their key start with the
 // string `labels.` and their value type set to string type. It then wraps those
 // key/value pairs in a top-level `labels` namespace.
-func (e *Event) Labels(labels ...*LabelSource) *zerolog.Event {
+func (e *Event) Labels(labels ...*LabelSource) *Event {
 	lbls := newLabels()
 
 	for i := range labels {
@@ -37,7 +37,8 @@ func (e *Event) Labels(labels ...*LabelSource) *zerolog.Event {
 		}
 	}
 
-	return e.Event.Dict("logging.googleapis.com/labels", zerolog.Dict().Fields(lbls.store))
+	e.Event.Dict("logging.googleapis.com/labels", zerolog.Dict().Fields(lbls.store))
+	return e
 }
 
 func isLabelEvent(label *LabelSource) bool {
