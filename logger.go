@@ -91,7 +91,7 @@ func (l *Logger) Error() *Event {
 }
 
 func (l *Logger) Err(err error) *Event {
-	e := l.Logger.Error().Err(err)
+	e := l.Logger.Err(err)
 	return &Event{e}
 }
 
