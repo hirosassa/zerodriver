@@ -2,6 +2,8 @@ name: test
 
 on:
   push:
+    branches:
+      - master
     paths:
     - '**.go'
     - '.github/workflows/test.yml'
@@ -12,12 +14,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.19
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: "go.mod"
       - name: Test
         run: go test -v ./... -coverprofile cover.out
 
